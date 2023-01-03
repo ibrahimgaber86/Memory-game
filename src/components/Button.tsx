@@ -26,6 +26,7 @@ const ButtonBase = styled.button`
 `;
 const ButtonText = styled.span`
   ${TextClip}
+  letter-spacing:2px;
 `;
 export const ButtonGroup = styled.div`
   ${FlexCenter}

@@ -1,6 +1,6 @@
 import React from "react";
-import styled from "styled-components";
 import { createPortal } from "react-dom";
+import styled from "styled-components";
 import Button, { ButtonGroup } from "./Button";
 import FlexCenter from "./styled/FlexCenter";
 import TextClip from "./styled/TextClip";
@@ -39,7 +39,7 @@ const GameModal = () => {
             dispatch(pauseGame(false));
           }}
         >
-          run
+          play
         </Button>
       </Modal>
     ) : (

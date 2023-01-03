@@ -14,7 +14,7 @@ type GameInitialState = {
 const initialState: GameInitialState = {
   selected: [],
   flip: 0,
-  paused: false,
+  paused: true,
   cardCount: 3,
   rightChoice: 0,
   gameOver: false,
