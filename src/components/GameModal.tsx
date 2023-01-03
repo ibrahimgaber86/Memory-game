@@ -1,0 +1,69 @@
+import React from "react";
+import styled from "styled-components";
+import { createPortal } from "react-dom";
+import Button, { ButtonGroup } from "./Button";
+import FlexCenter from "./styled/FlexCenter";
+import TextClip from "./styled/TextClip";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import { incrementCards, pauseGame, restartGame } from "../features/game";
+
+const Modal = styled.div`
+  ${FlexCenter};
+  flex-direction: column;
+  position: fixed;
+  color: #fff;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.8);
+  h1 {
+    text-align: center;
+    font-size: calc(4rem + 5vw);
+    ${FlexCenter}
+    ${TextClip}
+  }
+`;
+
+const GameModal = () => {
+  const dispatch = useAppDispatch();
+  const paused = useAppSelector((s) => s.game.paused);
+  const gameOver = useAppSelector((s) => s.game.gameOver);
+
+  return createPortal(
+    paused && !gameOver ? (
+      <Modal>
+        <h1>Paused</h1>
+        <Button
+          handler={() => {
+            dispatch(pauseGame(false));
+          }}
+        >
+          run
+        </Button>
+      </Modal>
+    ) : (
+      <Modal>
+        <h1>Game Over</h1>
+        <ButtonGroup>
+          <Button
+            handler={() => {
+              dispatch(restartGame());
+            }}
+          >
+            restart
+          </Button>
+          <Button
+            handler={() => {
+              dispatch(incrementCards());
+            }}
+          >
+            next level
+          </Button>
+        </ButtonGroup>
+      </Modal>
+    ),
+    document.getElementById("modal")!
+  );
+};
+export default GameModal;
