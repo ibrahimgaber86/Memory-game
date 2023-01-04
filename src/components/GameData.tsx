@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { finishGame } from "../features/game";
+import { tickSound } from "../sounds";
 import { useAppSelector, useAppDispatch } from "../store/store";
 import FlexCenter from "./styled/FlexCenter";
 import MaxWidth from "./styled/MaxWidth";
@@ -41,6 +42,9 @@ const GameData = () => {
     return () => clearInterval(timerId.current);
   }, [paused, cardCount, gameOver]);
   useEffect(() => {
+    if (timer <= 10) {
+      tickSound.run();
+    }
     if (timer <= 0) {
       // clearInterval(timerId.current);
       dispatch(finishGame(true));
