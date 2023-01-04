@@ -10,6 +10,7 @@ import "./App.css";
 import imgs from "./imgs";
 
 import { useAppSelector } from "./store/store";
+import { AnimatePresence } from "framer-motion";
 
 const Title = styled.h1`
   font-size: calc(2rem + 2vw);
@@ -51,7 +52,7 @@ function App() {
         <Title>Memory Game</Title>
         <GameData />
         <Board imgs={cardImgs} />
-        {showGameModal && <GameOver />}
+        <AnimatePresence>{showGameModal && <GameOver />}</AnimatePresence>
       </div>
     </>
   );

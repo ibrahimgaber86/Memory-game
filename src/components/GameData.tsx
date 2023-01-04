@@ -20,6 +20,7 @@ const GameData = () => {
 
   const paused = useAppSelector((s) => s.game.paused);
   const restart = useAppSelector((s) => s.game.restart);
+  const gameOver = useAppSelector((s) => s.game.gameOver);
   const flip = useAppSelector((s) => s.game.flip);
   const cardCount = useAppSelector((s) => s.game.cardCount);
 
@@ -32,19 +33,19 @@ const GameData = () => {
   }, [cardCount, restart]);
 
   useEffect(() => {
-    if (paused) {
+    if (paused || gameOver) {
       clearInterval(timerId.current);
     } else {
       timerId.current = window.setInterval(() => setTimer((p) => p - 1), 1000);
     }
     return () => clearInterval(timerId.current);
-  }, [paused, cardCount]);
+  }, [paused, cardCount, gameOver]);
   useEffect(() => {
-    if (timer === 0) {
-      clearInterval(timerId.current);
+    if (timer <= 0) {
+      // clearInterval(timerId.current);
       dispatch(finishGame(true));
     }
-  }, [timer]);
+  }, [timer, dispatch]);
   return (
     <>
       <Head>

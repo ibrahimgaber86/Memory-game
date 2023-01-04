@@ -6,8 +6,8 @@ import FlexCenter from "./styled/FlexCenter";
 import TextClip from "./styled/TextClip";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { incrementCards, pauseGame, restartGame } from "../features/game";
-
-const Modal = styled.div`
+import { motion } from "framer-motion";
+const Modal = styled(motion.div)`
   ${FlexCenter};
   flex-direction: column;
   position: fixed;
@@ -31,38 +31,46 @@ const GameModal = () => {
   const gameOver = useAppSelector((s) => s.game.gameOver);
 
   return createPortal(
-    paused && !gameOver ? (
-      <Modal>
-        <h1>Paused</h1>
-        <Button
-          handler={() => {
-            dispatch(pauseGame(false));
-          }}
-        >
-          play
-        </Button>
-      </Modal>
-    ) : (
-      <Modal>
-        <h1>Game Over</h1>
-        <ButtonGroup>
+    <Modal
+      animate={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      exit={{ opacity: 0 }}
+    >
+      {paused && !gameOver && (
+        <>
+          <h1>Paused</h1>
           <Button
             handler={() => {
-              dispatch(restartGame());
+              dispatch(pauseGame(false));
             }}
           >
-            restart
+            play
           </Button>
-          <Button
-            handler={() => {
-              dispatch(incrementCards());
-            }}
-          >
-            next level
-          </Button>
-        </ButtonGroup>
-      </Modal>
-    ),
+        </>
+      )}
+      {gameOver && (
+        <>
+          <h1>Game Over</h1>
+          <ButtonGroup>
+            <Button
+              handler={() => {
+                dispatch(restartGame());
+              }}
+            >
+              restart
+            </Button>
+            <Button
+              handler={() => {
+                dispatch(incrementCards());
+              }}
+            >
+              next level
+            </Button>
+          </ButtonGroup>
+        </>
+      )}
+    </Modal>,
     document.getElementById("modal")!
   );
 };
