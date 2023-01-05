@@ -32,12 +32,12 @@ function App() {
     [cardCount, restart]
   );
   useEffect(() => {
-    if (gameOver) {
+    if (gameOver.state) {
       setTimeout(() => setShowGameModal(true), 1000);
     } else {
       setShowGameModal(false);
     }
-  }, [gameOver]);
+  }, [gameOver.state]);
   useEffect(() => {
     if (paused) {
       setShowGameModal(true);

@@ -3,21 +3,23 @@ import { PayloadAction } from "@reduxjs/toolkit/dist/createAction";
 import * as sounds from "../sounds";
 
 type GameInitialState = {
+  first: boolean;
   selected: HTMLDivElement[];
   flip: number;
   paused: boolean;
   cardCount: number;
   rightChoice: number;
-  gameOver: boolean;
+  gameOver: { state: boolean; message: string };
   restart: {};
 };
 const initialState: GameInitialState = {
+  first: true,
   selected: [],
   flip: 0,
   paused: true,
   cardCount: 3,
   rightChoice: 0,
-  gameOver: false,
+  gameOver: { state: false, message: "" },
   restart: {},
 };
 const gameSlice = createSlice({
@@ -47,7 +49,8 @@ const gameSlice = createSlice({
         state.rightChoice++;
         if (state.cardCount === state.rightChoice) {
           state.paused = true;
-          state.gameOver = true;
+          state.gameOver.state = true;
+          state.gameOver.message = "You win";
         }
       } else {
         sounds.failSound.run();
@@ -58,6 +61,9 @@ const gameSlice = createSlice({
         state.flip++;
       }
     },
+    startGame(state) {
+      state.first = false;
+    },
     pauseGame(state, action: PayloadAction<boolean>) {
       console.log("pause invoked");
 
@@ -66,9 +72,10 @@ const gameSlice = createSlice({
     incrementCards(state) {
       console.log("incrementCards invoked");
 
-      state.cardCount += 1;
+      state.cardCount += 2;
       state.selected = [];
-      state.gameOver = false;
+      state.gameOver.state = false;
+      state.gameOver.message = "";
       state.paused = false;
       state.flip = 0;
       state.rightChoice = 0;
@@ -76,15 +83,19 @@ const gameSlice = createSlice({
     },
     restartGame(state) {
       state.selected = [];
-      state.gameOver = false;
+      state.gameOver.state = false;
       state.paused = false;
       state.flip = 0;
       state.rightChoice = 0;
       state.restart = {};
     },
-    finishGame(state, action: PayloadAction<boolean>) {
-      state.paused = action.payload;
-      state.gameOver = action.payload;
+    finishGame(
+      state,
+      action: PayloadAction<{ state: boolean; message: string }>
+    ) {
+      state.paused = action.payload.state;
+      state.gameOver.state = action.payload.state;
+      state.gameOver.message = action.payload.message;
     },
   },
 });
@@ -96,5 +107,6 @@ export const {
   incrementCards,
   finishGame,
   restartGame,
+  startGame,
 } = gameSlice.actions;
 export default gameSlice.reducer;

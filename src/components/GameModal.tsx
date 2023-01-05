@@ -5,7 +5,12 @@ import Button, { ButtonGroup } from "./Button";
 import FlexCenter from "./styled/FlexCenter";
 import TextClip from "./styled/TextClip";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import { incrementCards, pauseGame, restartGame } from "../features/game";
+import {
+  incrementCards,
+  pauseGame,
+  restartGame,
+  startGame,
+} from "../features/game";
 import { motion } from "framer-motion";
 const Modal = styled(motion.div)`
   ${FlexCenter};
@@ -28,6 +33,7 @@ const Modal = styled(motion.div)`
 const GameModal = () => {
   const dispatch = useAppDispatch();
   const paused = useAppSelector((s) => s.game.paused);
+  const first = useAppSelector((s) => s.game.first);
   const gameOver = useAppSelector((s) => s.game.gameOver);
 
   return createPortal(
@@ -37,21 +43,22 @@ const GameModal = () => {
       transition={{ duration: 0.2 }}
       exit={{ opacity: 0 }}
     >
-      {paused && !gameOver && (
+      {paused && !gameOver.state && (
         <>
-          <h1>Paused</h1>
+          <h1>{first ? "Ready To Test Your Memory" : "Paused"}</h1>
           <Button
             handler={() => {
               dispatch(pauseGame(false));
+              if (first) dispatch(startGame());
             }}
           >
             play
           </Button>
         </>
       )}
-      {gameOver && (
+      {gameOver.state && (
         <>
-          <h1>Game Over</h1>
+          <h1>{gameOver.message}</h1>
           <ButtonGroup>
             <Button
               handler={() => {

@@ -34,7 +34,7 @@ const GameData = () => {
   }, [cardCount, restart]);
 
   useEffect(() => {
-    if (paused || gameOver) {
+    if (paused || gameOver.state) {
       clearInterval(timerId.current);
     } else {
       timerId.current = window.setInterval(() => setTimer((p) => p - 1), 1000);
@@ -46,8 +46,7 @@ const GameData = () => {
       tickSound.run();
     }
     if (timer <= 0) {
-      // clearInterval(timerId.current);
-      dispatch(finishGame(true));
+      dispatch(finishGame({ state: true, message: "Time Over" }));
     }
   }, [timer, dispatch]);
   return (
