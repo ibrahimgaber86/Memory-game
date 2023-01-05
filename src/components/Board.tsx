@@ -14,6 +14,9 @@ const BoardBase = styled.div`
   width: 80vw;
   margin: auto;
   margin-bottom: 1.5rem;
+  @media (max-width: 900px) {
+    width: 95vw;
+  }
 `;
 
 type boardProps = {
