@@ -21,15 +21,18 @@ type boardProps = {
 };
 const Board = ({ imgs }: boardProps) => {
   const dispatch = useAppDispatch();
+  const first = useAppSelector((s) => s.game.first);
   return (
-    <>
-      <BoardBase>
-        {imgs.map((img) => (
-          <Card img={img} key={img + Math.random()} />
-        ))}
-      </BoardBase>
-      <Button handler={() => dispatch(pauseGame(true))}>pause</Button>
-    </>
+    (first && <></>) || (
+      <>
+        <BoardBase>
+          {imgs.map((img, index) => (
+            <Card img={img} key={img + Math.random()} delay={index} />
+          ))}
+        </BoardBase>
+        <Button handler={() => dispatch(pauseGame(true))}>pause</Button>
+      </>
+    )
   );
 };
 

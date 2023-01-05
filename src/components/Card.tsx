@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
+import { motion } from "framer-motion";
 import { selectCard, matchCards } from "../features/game";
 import bgImg from "../imgs/back.jpeg";
 import { useAppDispatch } from "../store/store";
+import { flipSound } from "../sounds";
 
 const Side = styled.div<{ img?: string }>`
   position: absolute;
@@ -36,7 +38,7 @@ const GameCard = styled.div`
   width: calc(4rem + 5vw);
   height: calc(5rem + 6vw); ;
 `;
-const CardContainer = styled.div`
+const CardContainer = styled(motion.div)`
   perspective: 800px;
   margin: 10px;
   .flip {
@@ -46,14 +48,18 @@ const CardContainer = styled.div`
 
 type cardPropType = {
   img?: string;
+  delay?: number;
 };
-const Card = ({ img }: cardPropType) => {
+const Card = ({ img, delay }: cardPropType) => {
   const card = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {});
   return (
-    <CardContainer>
+    <CardContainer
+      initial={{ opacity: 0, scale: 2 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.3 * (delay || 0) }}
+    >
       <GameCard ref={card} data-img={img}>
         <Face img={img}></Face>
         <Back

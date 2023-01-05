@@ -1,6 +1,7 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
+import { motion } from "framer-motion";
 import Button, { ButtonGroup } from "./Button";
 import FlexCenter from "./styled/FlexCenter";
 import TextClip from "./styled/TextClip";
@@ -11,7 +12,8 @@ import {
   restartGame,
   startGame,
 } from "../features/game";
-import { motion } from "framer-motion";
+import imgs from "../imgs";
+
 const Modal = styled(motion.div)`
   ${FlexCenter};
   flex-direction: column;
@@ -35,6 +37,7 @@ const GameModal = () => {
   const paused = useAppSelector((s) => s.game.paused);
   const first = useAppSelector((s) => s.game.first);
   const gameOver = useAppSelector((s) => s.game.gameOver);
+  const cardCount = useAppSelector((s) => s.game.cardCount);
 
   return createPortal(
     <Modal
@@ -65,15 +68,17 @@ const GameModal = () => {
                 dispatch(restartGame());
               }}
             >
-              restart
+              replay
             </Button>
-            <Button
-              handler={() => {
-                dispatch(incrementCards());
-              }}
-            >
-              next level
-            </Button>
+            {cardCount <= imgs.length && (
+              <Button
+                handler={() => {
+                  dispatch(incrementCards());
+                }}
+              >
+                next level
+              </Button>
+            )}
           </ButtonGroup>
         </>
       )}
