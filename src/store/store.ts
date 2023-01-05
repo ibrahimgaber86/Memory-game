@@ -6,6 +6,7 @@ const store = configureStore({
   reducer: {
     game: gameReducer,
   },
+  devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),
 });
