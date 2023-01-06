@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Board from "./components/Board";
 import GameData from "./components/GameData";
 import GameOver from "./components/GameModal";
+import Logo from "./components/Logo";
 import TextClip from "./components/styled/TextClip";
 
 import "./App.css";
@@ -52,6 +53,7 @@ function App() {
         <Title>Memory Game</Title>
         <GameData />
         <Board imgs={cardImgs} />
+        <Logo />
         <AnimatePresence>{showGameModal && <GameOver />}</AnimatePresence>
       </div>
     </>
