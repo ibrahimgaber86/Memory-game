@@ -58,7 +58,7 @@ const Card = ({ img, delay }: cardPropType) => {
     <CardContainer
       initial={{ opacity: 0, scale: 2 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0.3 * (delay || 0) }}
+      transition={{ delay: 0.1 * (delay || 0) }}
     >
       <GameCard ref={card} data-img={img}>
         <Face img={img}></Face>
