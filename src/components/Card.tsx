@@ -1,10 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import { selectCard, matchCards } from "../features/game";
+import { selectCard } from "../features/game";
 import bgImg from "../imgs/back.jpeg";
 import { useAppDispatch } from "../store/store";
-import { flipSound } from "../sounds";
 
 const Side = styled.div<{ img?: string }>`
   position: absolute;
@@ -67,7 +66,6 @@ const Card = ({ img, delay }: cardPropType) => {
           onClick={() => {
             if (card.current?.classList.contains("flip ")) return;
             dispatch(selectCard(card.current!));
-            dispatch(matchCards());
           }}
         ></Back>
       </GameCard>

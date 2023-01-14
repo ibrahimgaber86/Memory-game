@@ -27,25 +27,21 @@ function App() {
   const restart = useAppSelector((s) => s.game.restart);
   const cardImgs = useMemo(
     () =>
-      [...imgs.slice(0, cardCount), ...imgs.slice(0, cardCount)].sort(
-        () => Math.random() - 0.5
-      ),
+      [
+        ...imgs.sort(() => Math.random() - 0.5).slice(0, cardCount),
+        ...imgs.slice(0, cardCount),
+      ].sort(() => Math.random() - 0.5),
     [cardCount, restart]
   );
   useEffect(() => {
     if (gameOver.state) {
       setTimeout(() => setShowGameModal(true), 1000);
-    } else {
-      setShowGameModal(false);
-    }
-  }, [gameOver.state]);
-  useEffect(() => {
-    if (paused) {
+    } else if (paused) {
       setShowGameModal(true);
     } else {
       setShowGameModal(false);
     }
-  }, [paused]);
+  }, [gameOver.state, paused]);
 
   return (
     <>

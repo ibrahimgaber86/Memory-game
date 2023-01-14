@@ -37,9 +37,6 @@ const gameSlice = createSlice({
       sounds.flipSound.play();
       action.payload.classList.add("flip");
       state.selected.push(action.payload as any);
-    },
-    matchCards(state) {
-      console.log("match invoked");
 
       if (state.selected.length <= 1) return;
       if (state.selected[0].dataset.img === state.selected[1].dataset.img) {
@@ -102,7 +99,6 @@ const gameSlice = createSlice({
 
 export const {
   selectCard,
-  matchCards,
   pauseGame,
   incrementCards,
   finishGame,
