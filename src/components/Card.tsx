@@ -65,6 +65,7 @@ const Card = ({ img, delay }: cardPropType) => {
         <Back
           img={bgImg}
           onClick={() => {
+            if (card.current?.classList.contains("flip ")) return;
             dispatch(selectCard(card.current!));
             dispatch(matchCards());
           }}
