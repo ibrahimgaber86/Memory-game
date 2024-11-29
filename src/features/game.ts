@@ -3,7 +3,7 @@ import * as sounds from "../sounds";
 
 interface GameInitialState {
   first: boolean;
-  selected: HTMLDivElement[];
+  selected: string[];
   flip: number;
   paused: boolean;
   cardCount: number;
@@ -30,39 +30,38 @@ const gameSlice = createSlice({
   name: "game",
   initialState,
   reducers: {
-    selectCard(state, action: PayloadAction<HTMLDivElement>) {
+    selectCard(state, action: PayloadAction<string>) {
       if (state.selected.length >= 2 || state.selected.includes(action.payload)) return;
 
-      // Play flip sound and add flip class
       sounds.flipSound.play();
-      action.payload.classList.add("flip");
       state.selected.push(action.payload);
 
-      // Check if two cards are selected
       if (state.selected.length < 2) return;
 
-      const [firstCard, secondCard] = state.selected;
+      const [firstCardId, secondCardId] = state.selected;
 
-      // Check if the selected cards match
-      if (firstCard.dataset.img === secondCard.dataset.img) {
-        sounds.clapSound.play();
-        state.selected = [];
-        state.flip++;
-        state.rightChoice++;
+      const firstCard = document.getElementById(firstCardId);
+      const secondCard = document.getElementById(secondCardId);
 
-        // Check if all cards are matched
-        if (state.cardCount === state.rightChoice) {
-          state.paused = true;
-          state.gameOver = { state: true, message: "You win" };
-        }
-      } else {
-        sounds.failSound.run();
-        setTimeout(() => {
-          firstCard.classList.remove("flip");
-          secondCard.classList.remove("flip");
+      if (firstCard && secondCard) {
+        if (firstCard.dataset.img === secondCard.dataset.img) {
+          sounds.clapSound.play();
           state.selected = [];
           state.flip++;
-        }, 1000);
+          state.rightChoice++;
+          if (state.cardCount === state.rightChoice) {
+            state.paused = true;
+            state.gameOver = { state: true, message: "You win" };
+          }
+        } else {
+          sounds.failSound.run();
+          setTimeout(() => {
+            firstCard.classList.remove("flip");
+            secondCard.classList.remove("flip");
+            state.selected = [];
+            state.flip++;
+          }, 1000);
+        }
       }
     },
     startGame(state) {
