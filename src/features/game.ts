@@ -1,20 +1,17 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction } from "@reduxjs/toolkit/dist/createAction";
 import * as sounds from "../sounds";
 
-interface GameInitialState {
+type GameInitialState = {
   first: boolean;
-  selected: string[];
+  selected: HTMLDivElement[];
   flip: number;
   paused: boolean;
   cardCount: number;
   rightChoice: number;
-  gameOver: {
-    state: boolean;
-    message: string;
-  };
-  restart: Record<string, unknown>;
-}
-
+  gameOver: { state: boolean; message: string };
+  restart: {};
+};
 const initialState: GameInitialState = {
   first: true,
   selected: [],
@@ -25,55 +22,57 @@ const initialState: GameInitialState = {
   gameOver: { state: false, message: "" },
   restart: {},
 };
-
 const gameSlice = createSlice({
   name: "game",
   initialState,
   reducers: {
-    selectCard(state, action: PayloadAction<string>) {
-      if (state.selected.length >= 2 || state.selected.includes(action.payload)) return;
+    selectCard(state, action: PayloadAction<HTMLDivElement>) {
+      console.log("select invoked");
 
+      if (
+        state.selected.length >= 2 ||
+        state.selected.includes(action.payload as any)
+      )
+        return;
       sounds.flipSound.play();
-      state.selected.push(action.payload);
+      action.payload.classList.add("flip");
+      state.selected.push(action.payload as any);
 
-      if (state.selected.length < 2) return;
-
-      const [firstCardId, secondCardId] = state.selected;
-
-      const firstCard = document.getElementById(firstCardId);
-      const secondCard = document.getElementById(secondCardId);
-
-      if (firstCard && secondCard) {
-        if (firstCard.dataset.img === secondCard.dataset.img) {
-          sounds.clapSound.play();
-          state.selected = [];
-          state.flip++;
-          state.rightChoice++;
-          if (state.cardCount === state.rightChoice) {
-            state.paused = true;
-            state.gameOver = { state: true, message: "You win" };
-          }
-        } else {
-          sounds.failSound.run();
-          setTimeout(() => {
-            firstCard.classList.remove("flip");
-            secondCard.classList.remove("flip");
-            state.selected = [];
-            state.flip++;
-          }, 1000);
+      if (state.selected.length <= 1) return;
+      if (state.selected[0].dataset.img === state.selected[1].dataset.img) {
+        sounds.clapSound.run();
+        state.selected = [];
+        state.flip++;
+        state.rightChoice++;
+        if (state.cardCount === state.rightChoice) {
+          state.paused = true;
+          state.gameOver.state = true;
+          state.gameOver.message = "You win";
         }
+      } else {
+        sounds.failSound.run();
+        state.selected.forEach((el) => {
+          setTimeout(() => el.classList.remove("flip"), 1000);
+        });
+        state.selected = [];
+        state.flip++;
       }
     },
     startGame(state) {
       state.first = false;
     },
     pauseGame(state, action: PayloadAction<boolean>) {
+      console.log("pause invoked");
+
       state.paused = action.payload;
     },
     incrementCards(state) {
+      console.log("incrementCards invoked");
+
       state.cardCount += 2;
       state.selected = [];
-      state.gameOver = { state: false, message: "" };
+      state.gameOver.state = false;
+      state.gameOver.message = "";
       state.paused = false;
       state.flip = 0;
       state.rightChoice = 0;
@@ -81,19 +80,29 @@ const gameSlice = createSlice({
     },
     restartGame(state) {
       state.selected = [];
-      state.gameOver = { state: false, message: "" };
+      state.gameOver.state = false;
       state.paused = false;
       state.flip = 0;
       state.rightChoice = 0;
       state.restart = {};
     },
-    finishGame(state, action: PayloadAction<{ state: boolean; message: string }>) {
+    finishGame(
+      state,
+      action: PayloadAction<{ state: boolean; message: string }>
+    ) {
       state.paused = action.payload.state;
-      state.gameOver = action.payload;
+      state.gameOver.state = action.payload.state;
+      state.gameOver.message = action.payload.message;
     },
   },
 });
 
-export const { selectCard, pauseGame, incrementCards, finishGame, restartGame, startGame } = gameSlice.actions;
-
+export const {
+  selectCard,
+  pauseGame,
+  incrementCards,
+  finishGame,
+  restartGame,
+  startGame,
+} = gameSlice.actions;
 export default gameSlice.reducer;
